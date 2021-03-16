@@ -1,0 +1,8 @@
+prefix=/home/robotica/catkin_ws/devel
+
+Name: meu_pacote
+Description: Description of meu_pacote
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
