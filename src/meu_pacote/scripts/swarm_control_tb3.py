@@ -11,6 +11,7 @@ class swarm_control:
 
     def __init__(self):
         rospy.init_node('swarm_control_tb3',  anonymous=False) 
+        rospy.Subscriber('cmd_vel', Twist, self.update)
         self.pub1 = rospy.Publisher('/tb3_0/cmd_vel', Twist, queue_size=10)
         self.pub2 = rospy.Publisher('/tb3_1/cmd_vel', Twist, queue_size=10)
 
