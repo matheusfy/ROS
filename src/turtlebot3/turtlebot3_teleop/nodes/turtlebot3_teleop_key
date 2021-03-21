@@ -29,6 +29,11 @@
 
 import rospy
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Point
+from nav_msgs.msg import Odometry
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
+import numpy as np
+
 import sys, select, os
 if os.name == 'nt':
   import msvcrt
@@ -63,6 +68,13 @@ CTRL-C to quit
 e = """
 Communications Failed
 """
+def get_rotation (msg):
+    global roll, pitch, yaw
+    orientation_q = msg.pose.pose.orientation
+    orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+    (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
+    rospy.loginfo(f"roll:{roll:.2f} pitch:{pitch:.2f} yaw:{np.rad2deg(yaw):.2f}")
+
 
 def getKey():
     if os.name == 'nt':
@@ -104,6 +116,7 @@ def constrain(input, low, high):
 
     return input
 
+# Funcao que verificar limite de velocidade
 def checkLinearLimitVelocity(vel):
     if turtlebot3_model == "burger":
       vel = constrain(vel, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL)
@@ -129,9 +142,9 @@ if __name__=="__main__":
         settings = termios.tcgetattr(sys.stdin)
 
     rospy.init_node('turtlebot3_teleop')
-    pub1 = rospy.Publisher('tb3_0/cmd_vel', Twist, queue_size=10)
-    pub2 = rospy.Publisher('tb3_1/cmd_vel', Twist, queue_size=10)
-    turtlebot3_model = rospy.get_param("model", "burguer")
+    
+    pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    turtlebot3_model = rospy.get_param("model", "waffle")
 
     status = 0
     target_linear_vel   = 0.0
@@ -172,17 +185,17 @@ if __name__=="__main__":
             if status == 20 :
                 print(msg)
                 status = 0
-
+            
+            # publicando a informacao no robbo
             twist = Twist()
 
             control_linear_vel = makeSimpleProfile(control_linear_vel, target_linear_vel, (LIN_VEL_STEP_SIZE/2.0))
             twist.linear.x = control_linear_vel; twist.linear.y = 0.0; twist.linear.z = 0.0
-
+            #print("controle: " + str(control_linear_vel))
             control_angular_vel = makeSimpleProfile(control_angular_vel, target_angular_vel, (ANG_VEL_STEP_SIZE/2.0))
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = control_angular_vel
 			
-            pub1.publish(twist)
-            pub2.publish(twist)
+            pub.publish(twist)
     except:
         print(e)
 
@@ -190,8 +203,7 @@ if __name__=="__main__":
         twist = Twist()
         twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0
         twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 0.0
-        pub1.publish(twist)
-        pub2.publish(twist)
-
+        pub.publish(twist)
+        
     if os.name != 'nt':
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)

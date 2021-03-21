@@ -51,6 +51,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/robotica/catkin_ws/src/meu_pacote/CMakeLists.txt"
   "/home/robotica/catkin_ws/src/meu_pacote/package.xml"
   "/home/robotica/catkin_ws/src/meu_pacote/scripts/listener.py"
+  "/home/robotica/catkin_ws/src/meu_pacote/scripts/quaterniom2euler.py"
+  "/home/robotica/catkin_ws/src/meu_pacote/scripts/swarm_control_tb3.py"
   "/home/robotica/catkin_ws/src/meu_pacote/scripts/talker.py"
   "/home/robotica/catkin_ws/src/turtlebot3/turtlebot3/CMakeLists.txt"
   "/home/robotica/catkin_ws/src/turtlebot3/turtlebot3/package.xml"
