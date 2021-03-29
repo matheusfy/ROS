@@ -8,6 +8,10 @@ from tf.transformations import euler_from_quaternion
 import numpy as np
 import time
 
+# rodar rosrun teleop para utilizar awsd
+# rodar rosrun swarm_control para publicar no Mestre o comando de movimento
+# rodar seguidor.py para fazer o seguidor seguir o mestre se movendo
+
 
 class SeguidorTurtle:
     def __init__(self):
