@@ -30,7 +30,7 @@ class SeguidorTurtle:
         self.pose1 = Pose() # posicao do seguidor
         self.rate = rospy.Rate(10)
         self.max_vel = 0.22
-        self.max_ang = 2.84
+        self.max_ang = 2.84 
 
     #funcao para pegar posicao do mestre
     def update_pose0(self, msg):
@@ -40,6 +40,7 @@ class SeguidorTurtle:
         self.pose0.x = msg.pose.pose.position.x
         self.pose0.y = msg.pose.pose.position.y
         self.pose0.theta = yaw
+        #rospy.loginfo("direcao yaw: " + str(self.pose0.theta))
     
     #funcao para pegar posição do seguidor
     def update_pose1(self, msg):
@@ -73,12 +74,12 @@ class SeguidorTurtle:
     #funcao que atualiza o seguidor para seguir ou parar
     def move2ref(self):
 
-        ref_tol = 0.5 # tolerancia de distancia entre mestre e seguidor
+        ref_tol = 1 # tolerancia de distancia entre mestre e seguidor
         vel_msg = Twist() #objeto que publica mensagem que atualiza a velocidade 
         flag = False
- 
+        rospy.loginfo("Começando ")
         #while self.ref_distance() >= ref_tol:
-        while True :
+        while not rospy.is_shutdown():
             if self.ref_distance() >= ref_tol:
                 rospy.loginfo(self.ref_distance())
                 vel_msg.linear.x = self.linear_vel_control()
@@ -100,7 +101,6 @@ class SeguidorTurtle:
                     vel_msg.angular.z= 0
                     self.vel_pub1.publish(vel_msg)
                     flag = True
-
         rospy.loginfo("Finished")
 
 if __name__ == '__main__':

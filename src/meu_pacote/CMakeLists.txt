@@ -161,8 +161,8 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS scripts/talker.py scripts/listener.py scripts/swarm_control_tb3.py 
 scripts/quaterniom2euler.py
-scripts/turtle_pose.py
 scripts/seguidor.py
+scripts/Lidar.ipynb
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

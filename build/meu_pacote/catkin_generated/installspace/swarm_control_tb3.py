@@ -10,14 +10,14 @@ class swarm_control:
         rospy.init_node('swarm_control_tb3',  anonymous=False) 
         rospy.Subscriber('cmd_vel', Twist, self.update)
         self.pub1 = rospy.Publisher('/tb3_0/cmd_vel', Twist, queue_size=10)
-        #self.pub2 = rospy.Publisher('/tb3_1/cmd_vel', Twist, queue_size=10)
+        
 
         self.new_cmd = Twist()
         self.cmd = Twist()
 
         self.rate = rospy.Rate(10) # Hz
         rospy.loginfo("/cmd_vel >> /tb3_0/cmd_vel")
-        #rospy.loginfo("/cmd_vel >> /tb3_1/cmd_vel")
+        
 
  
 
@@ -32,7 +32,7 @@ class swarm_control:
             self.new_cmd.angular.z = self.cmd.angular.z
 
             self.pub1.publish(self.new_cmd)
-            #self.pub2.publish(self.new_cmd)
+            
 
             self.rate.sleep()
 
