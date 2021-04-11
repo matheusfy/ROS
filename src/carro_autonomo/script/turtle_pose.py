@@ -37,10 +37,12 @@ class TurtleControl:
         if abs(control) > self.max_vel:
             control = self.max_vel*np.sign(control)
         # velocidade angular
+        rospy.loginfo("valor vel_linear : %f", control)
         angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) 
         control_angular = ka*(angle_r - self.pose.theta)         
         if abs(control_angular) > self.max_ang:
             control_angular = self.max_ang*np.sign(control_angular)
+        rospy.loginfo("valor vel_angular: %f", control_angular)
 
         return control, control_angular
 
