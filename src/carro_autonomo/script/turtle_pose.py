@@ -30,19 +30,19 @@ class TurtleControl:
     def ref_distance(self, ref_pose):
         return np.sqrt(  (ref_pose.x - self.pose.x)**2 + (ref_pose.y - self.pose.y)**2)
 
-    def linear_vel_control(self, ref_pose, kp = 1.5):
+    def linear_angular_vel_control(self, ref_pose, kp = 1.5, ka = 6):
+        # velocidade linear
         distance = self.ref_distance(ref_pose)
         control = kp* distance
         if abs(control) > self.max_vel:
             control = self.max_vel*np.sign(control)
-        return control
+        # velocidade angular
+        angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) 
+        control_angular = ka*(angle_r - self.pose.theta)         
+        if abs(control_angular) > self.max_ang:
+            control_angular = self.max_ang*np.sign(control_angular)
 
-    def angular_vel_control(self, ref_pose, kp=6):
-        angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x )        
-        control = kp*(angle_r - self.pose.theta)
-        if abs(control) > self.max_ang:
-            control = self.max_ang*np.sign(control)
-        return control
+        return control, control_angular
 
     def move2ref(self, x_ref, y_ref):
         ref_pose = Pose()
@@ -51,17 +51,16 @@ class TurtleControl:
         ref_tol = 0.01
         vel_msg = Twist()
         while self.ref_distance(ref_pose) >= ref_tol:
-            vel_msg.linear.x = self.linear_vel_control(ref_pose)
+            vel_msg.linear.x, vel_msg.angular.z = self.linear_angular_vel_control(ref_pose)
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
             vel_msg.angular.x = 0
             vel_msg.angular.y = 0
-            vel_msg.angular.z = self.angular_vel_control(ref_pose)
-
             self.vel_publisher.publish(vel_msg)
 
             self.rate.sleep()
-
+            if rospy.is_shutdown():
+                break
         # stop
         vel_msg.linear.x = 0
         vel_msg.angular.z= 0
