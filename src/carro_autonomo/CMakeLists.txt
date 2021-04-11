@@ -162,6 +162,7 @@ include_directories(
    script/turtle_pose.py
    script/Lidar.ipynb
    script/lidar.py
+   script/rotate.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
