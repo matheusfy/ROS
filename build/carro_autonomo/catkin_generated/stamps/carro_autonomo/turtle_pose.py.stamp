@@ -71,7 +71,7 @@ class TurtleControl:
 
 if __name__ == '__main__':
     bot = TurtleControl()
-    time.sleep(5)
+    time.sleep(1)
     rospy.loginfo("Insira o valor de x:")
     x = int(input())
     rospy.loginfo("Insira o valor de y:")

@@ -30,7 +30,7 @@ class SeguidorTurtle:
         self.pose1 = Pose() # posicao do seguidor
         self.rate = rospy.Rate(10)
         self.max_vel = 0.22
-        self.max_ang = 2.84
+        self.max_ang = 2.84 
 
     #funcao para pegar posicao do mestre
     def update_pose0(self, msg):

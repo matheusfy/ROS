@@ -160,6 +160,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
    script/turtle_pose.py
+   script/Lidar.ipynb
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
