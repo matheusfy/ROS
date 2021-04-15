@@ -5,11 +5,8 @@ from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 from turtlesim.msg import Pose
-<<<<<<< HEAD
 import time
 import numpy as np
-=======
->>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
 
 #Criando classe para o tópico Lidar
 #Começar declarando a classe e criando função principais e de inicialização
@@ -28,19 +25,16 @@ class Lidar:
         rospy.Subscriber('/scan', LaserScan, self.update)
         rospy.Subscriber('/cmd_vel,', Twist, self.update_vel)
         rospy.Subscriber('/odom', Odometry, self.update_pose)
-<<<<<<< HEAD
         self.vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         self.pose = Pose()
         self.scan = LaserScan()
         self.rate = rospy.Rate(10)
         self.max_vel = 0.22
         self.max_ang = 2.84
-=======
 
         self.pose = Pose()
         self.scan = LaserScan()
 
->>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
 
     def update(self, msg):
         self.scan = msg
@@ -53,7 +47,6 @@ class Lidar:
         self.pose.y = msg.pose.pose.position.y
         # angulo em relacao ao meu referencial inicial 
         self.pose.theta =  yaw    
-<<<<<<< HEAD
     
     def update_vel(self,msg):
         self.msg.linear.x = msg.x
@@ -61,15 +54,12 @@ class Lidar:
 
     #Corrige orientação do robo para desviar do objeto
     def corrige_orientacao(self, ref_pose):
-=======
 
     def corrige_orientacao(self):
->>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
         # Frente do robo 0°
         # Direita do robo de 0 ~(-90°) (4º Quadrante)
         # Diagonal esquerda inferior 90° ~ 180(2º Quadrante)
         # Esquerda robo de 0 ~ 90° (1º Quadrante)
-<<<<<<< HEAD
         angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) + 30 # deslocado em 30° 
         control_angular = ka*(angle_r - self.pose.theta)         
         if abs(control_angular) > self.max_ang:
@@ -93,8 +83,6 @@ class Lidar:
             control_angular = self.max_ang*np.sign(control_angular)
 
         return control, control_angular
-=======
->>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
 
     def move2ref(self, x_ref, y_ref):
         ref_pose = Pose()
@@ -103,7 +91,6 @@ class Lidar:
         ref_tol = 0.01
         vel_msg = Twist()
         while self.ref_distance(ref_pose) >= ref_tol:
-<<<<<<< HEAD
             ref_360 = np.asarray(self.scan.ranges)
             ref_360[np.isinf(ref_360)==True] = 3.5
             if ref_360[0] == 3.5:
@@ -115,9 +102,7 @@ class Lidar:
             else if v_msgz < 0.5:
                 if str(self.scan.ranges[0]) != "inf":
 
-=======
             vel_msg.linear.x, vel_msg.angular.z = self.linear_angular_vel_control(ref_pose)
->>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
             
             rospy.loginfo("valor vel_linear : %f", vel_msg.linear.x)
             rospy.loginfo("valor vel_angular: %f", vel_msg.angular.z)
@@ -125,10 +110,7 @@ class Lidar:
             vel_msg.linear.z = 0
             vel_msg.angular.x = 0
             vel_msg.angular.y = 0
-<<<<<<< HEAD
             
-=======
->>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
             self.vel_publisher.publish(vel_msg)
 
             self.rate.sleep()
