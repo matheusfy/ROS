@@ -1,8 +1,0 @@
-prefix=/home/robotica/catkin_ws/install
-
-Name: sensor
-Description: Description of sensor
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

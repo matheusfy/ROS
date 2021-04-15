@@ -1,8 +1,0 @@
-prefix=/home/robotica/catkin_ws/install
-
-Name: carro_autonomo
-Description: Description of carro_autonomo
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
