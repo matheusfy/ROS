@@ -53,8 +53,11 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/robotica/catkin_ws/src/carro_autonomo/CMakeLists.txt"
   "/home/robotica/catkin_ws/src/carro_autonomo/package.xml"
   "/home/robotica/catkin_ws/src/carro_autonomo/script/Lidar.ipynb"
+<<<<<<< HEAD
   "/home/robotica/catkin_ws/src/carro_autonomo/script/lidar.py"
   "/home/robotica/catkin_ws/src/carro_autonomo/script/rotate.py"
+=======
+>>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
   "/home/robotica/catkin_ws/src/carro_autonomo/script/turtle_pose.py"
   "/home/robotica/catkin_ws/src/meu_pacote/CMakeLists.txt"
   "/home/robotica/catkin_ws/src/meu_pacote/package.xml"

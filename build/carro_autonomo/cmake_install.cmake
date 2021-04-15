@@ -60,6 +60,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/carro_autonomo" TYPE PROGRAM FILES "/home/robotica/catkin_ws/build/carro_autonomo/catkin_generated/installspace/Lidar.ipynb")
 endif()
 
+<<<<<<< HEAD
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/carro_autonomo" TYPE PROGRAM FILES "/home/robotica/catkin_ws/build/carro_autonomo/catkin_generated/installspace/lidar.py")
 endif()
@@ -68,3 +69,5 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/carro_autonomo" TYPE PROGRAM FILES "/home/robotica/catkin_ws/build/carro_autonomo/catkin_generated/installspace/rotate.py")
 endif()
 
+=======
+>>>>>>> 04308425297e9d19e1be81a4cd3d31148510b2b5
