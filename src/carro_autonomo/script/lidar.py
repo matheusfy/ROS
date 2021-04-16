@@ -8,6 +8,9 @@ from turtlesim.msg import Pose
 import time
 import numpy as np
 
+Orientacao = -1
+PI = 3.1415926
+
 #Criando classe para o tópico Lidar
 #Começar declarando a classe e criando função principais e de inicialização
 class Lidar:
@@ -53,9 +56,8 @@ class Lidar:
 
 
     #Corrige orientação do robo para desviar do objeto
-    def corrige_orientacao(self, ref_pose):
 
-    def corrige_orientacao(self):
+    def corrige_orientacao(self, ref_pose, ka=1):
         # Frente do robo 0°
         # Direita do robo de 0 ~(-90°) (4º Quadrante)
         # Diagonal esquerda inferior 90° ~ 180(2º Quadrante)
@@ -63,9 +65,8 @@ class Lidar:
         angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) + 30 # deslocado em 30° 
         control_angular = ka*(angle_r - self.pose.theta)         
         if abs(control_angular) > self.max_ang:
-            control_angular = self.max_ang*np.sign(control_angular)
-        
-        print(teste)
+            control_angular = self.max_ang*np.sign(control_angular) + 2*PI*0.15 # teoricamente rotaciona para o angulo da direcao do ponto + 45°
+        return control_angular
 
     def ref_distance(self, ref_pose):
         return np.sqrt(  (ref_pose.x - self.pose.x)**2 + (ref_pose.y - self.pose.y)**2)
@@ -76,36 +77,44 @@ class Lidar:
         control = kp* distance
         if abs(control) > self.max_vel:
             control = self.max_vel*np.sign(control)
+        
         # velocidade angular
         angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) 
-        control_angular = ka*(angle_r - self.pose.theta)         
+        print("angulo orientacao do robo: " + str(angle_r)) 
+        print("orientacao: "+ str(self.pose.theta))
+        control_angular = ka*(angle_r - self.pose.theta) 
+
         if abs(control_angular) > self.max_ang:
             control_angular = self.max_ang*np.sign(control_angular)
-
+        
         return control, control_angular
 
     def move2ref(self, x_ref, y_ref):
         ref_pose = Pose()
         ref_pose.x = x_ref
         ref_pose.y = y_ref
-        ref_tol = 0.01
+        ref_tol = 0.25
         vel_msg = Twist()
+        
         while self.ref_distance(ref_pose) >= ref_tol:
+            # Pega referência do lidar para detectar objeto a frente
             ref_360 = np.asarray(self.scan.ranges)
             ref_360[np.isinf(ref_360)==True] = 3.5
             if ref_360[0] == 3.5:
                 v_msgx, v_msgz = self.linear_angular_vel_control(ref_pose)
                 vel_msg.linear.x = v_msgx
-                # vel_msg.angular.z = v_msgz
-            else if ref_360[0] != 3.5
-                print("Objeto a frente! ")            
-            else if v_msgz < 0.5:
-                if str(self.scan.ranges[0]) != "inf":
-
-            vel_msg.linear.x, vel_msg.angular.z = self.linear_angular_vel_control(ref_pose)
+                vel_msg.angular.z = v_msgz
+            elif (ref_360[0] != 3.5) and ref_360[0]>2:
+                vel_msg.linear.x = 0.1*self.max_vel
+                print("Objeto a frente! mas longe. Andando pra frente lentamente.. ")            
+            elif ref_360[0]<= 2:
+                vel_msg.linear.x = 0.5*self.max_vel
+                vel_msg.angular.z = self.corrige_orientacao(ref_pose)
+                print("rotacionando para desviar do objeto")
+            # vel_msg.linear.x, vel_msg.angular.z = self.linear_angular_vel_control(ref_pose)
             
-            rospy.loginfo("valor vel_linear : %f", vel_msg.linear.x)
-            rospy.loginfo("valor vel_angular: %f", vel_msg.angular.z)
+            # rospy.loginfo("valor vel_linear : %f", vel_msg.linear.x)
+            # rospy.loginfo("valor vel_angular: %f", vel_msg.angular.z)
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
             vel_msg.angular.x = 0
