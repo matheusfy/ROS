@@ -111,6 +111,7 @@ class Lidar:
                 vel_msg.linear.x = 0.5*self.max_vel
                 vel_msg.angular.z = self.corrige_orientacao(ref_pose)
                 print("rotacionando para desviar do objeto")
+                
             # vel_msg.linear.x, vel_msg.angular.z = self.linear_angular_vel_control(ref_pose)
             
             # rospy.loginfo("valor vel_linear : %f", vel_msg.linear.x)
