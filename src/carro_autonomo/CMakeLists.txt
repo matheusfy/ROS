@@ -163,6 +163,8 @@ include_directories(
    script/Lidar.ipynb
    script/lidar.py
    script/rotate.py
+   script/Rot_trans.py
+   
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

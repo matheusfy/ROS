@@ -13,7 +13,7 @@ PI = 3.1415926
 
 #Criando classe para o tópico Lidar
 #Começar declarando a classe e criando função principais e de inicialização
-class Lidar:
+class LidarMestre:
     def __init__(self):
         
         # Inicializa Nó
@@ -25,18 +25,15 @@ class Lidar:
         # @param 1 : O topico
         # @param 2 : O objeto do Topico (LaserScan)
         # @param 3 : a função de callback
-        rospy.Subscriber('/scan', LaserScan, self.update)
-        rospy.Subscriber('/cmd_vel,', Twist, self.update_vel)
-        rospy.Subscriber('/odom', Odometry, self.update_pose)
-        self.vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+        rospy.Subscriber('/tb3_0/scan', LaserScan, self.update)
+        # rospy.Subscriber('/tb3_0/cmd_vel', Twist, self.update_vel)
+        rospy.Subscriber('/tb3_0/odom', Odometry, self.update_pose)
+        self.vel_publisher = rospy.Publisher('/tb3_0/cmd_vel', Twist, queue_size=10)
         self.pose = Pose()
         self.scan = LaserScan()
         self.rate = rospy.Rate(10)
         self.max_vel = 0.22
         self.max_ang = 2.84
-
-        self.pose = Pose()
-        self.scan = LaserScan()
 
 
     def update(self, msg):
@@ -51,8 +48,10 @@ class Lidar:
         # angulo em relacao ao meu referencial inicial 
         self.pose.theta =  yaw    
     
-    def update_vel(self,msg):
-        self.msg.linear.x = msg.x
+    
+    # def update_vel(self,msg):
+    #     self.msg.linear.x = msg.linear.x
+    #     self.msg.angula.z = msg.angular.z
 
 
     #Corrige orientação do robo para desviar do objeto
@@ -96,7 +95,9 @@ class Lidar:
         ref_tol = 0.25
         vel_msg = Twist()
         
+        # Enquanto mestre não chega no ponto solicitado via comando.:
         while self.ref_distance(ref_pose) >= ref_tol:
+
             # Pega referência do lidar para detectar objeto a frente
             ref_360 = np.asarray(self.scan.ranges)
             ref_360[np.isinf(ref_360)==True] = 3.5
@@ -111,11 +112,8 @@ class Lidar:
                 vel_msg.linear.x = 0.5*self.max_vel
                 vel_msg.angular.z = self.corrige_orientacao(ref_pose)
                 print("rotacionando para desviar do objeto")
-                
-            # vel_msg.linear.x, vel_msg.angular.z = self.linear_angular_vel_control(ref_pose)
-            
-            # rospy.loginfo("valor vel_linear : %f", vel_msg.linear.x)
-            # rospy.loginfo("valor vel_angular: %f", vel_msg.angular.z)
+
+
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
             vel_msg.angular.x = 0
@@ -135,7 +133,7 @@ class Lidar:
 
 if __name__ == '__main__':
     try:
-        mestre = Lidar()
+        mestre = LidarMestre()
         time.sleep(1)
         rospy.loginfo("Insira o valor de x:")
         x = int(input())
