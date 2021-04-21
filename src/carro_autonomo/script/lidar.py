@@ -79,8 +79,8 @@ class LidarMestre:
         
         # velocidade angular
         angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) 
-        print("angulo orientacao do robo: " + str(angle_r)) 
-        print("orientacao: "+ str(self.pose.theta))
+        # print("angulo orientacao do robo: " + str(angle_r)) 
+        # print("orientacao: "+ str(self.pose.theta))
         control_angular = ka*(angle_r - self.pose.theta) 
 
         if abs(control_angular) > self.max_ang:
@@ -92,9 +92,8 @@ class LidarMestre:
         ref_pose = Pose()
         ref_pose.x = x_ref
         ref_pose.y = y_ref
-        ref_tol = 0.25
+        ref_tol = 0.15
         vel_msg = Twist()
-        
         # Enquanto mestre não chega no ponto solicitado via comando.:
         while self.ref_distance(ref_pose) >= ref_tol:
 

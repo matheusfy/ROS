@@ -18,9 +18,9 @@ class TransRotation:
         
         rospy.init_node('No_TransRotation', anonymous= True)
 
-        rospy.Subscriber('/cmd_vel', Twist, self.update_vel)
-        rospy.Subscriber('/scan', LaserScan, self.update)
-        rospy.Subscriber('/odom', Odometry, self.update_pose)
+        rospy.Subscriber('/tb3_0/cmd_vel', Twist, self.update_vel)
+        rospy.Subscriber('/tb3_0/scan', LaserScan, self.update)
+        rospy.Subscriber('/tb3_0/odom', Odometry, self.update_pose)
 
         self.vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         self.pose = Pose()
@@ -72,6 +72,7 @@ if __name__ == '__main__':
 
         theta = float(input("Digite o angulo em Graus que deseja rotacionar: "))
         mapa = Rotacao_Translacao.Lidar()
+        print(mapa)
         x1, y1, matriz_rotacao = Rotacao_Translacao.Rotaciona(mapa, theta, angle='deg')
 
         x,y = x1, y1
