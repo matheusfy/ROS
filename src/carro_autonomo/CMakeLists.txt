@@ -165,6 +165,9 @@ include_directories(
    script/rotate.py
    script/Rot_trans.py
    script/lidar_seguidor.py
+   script/Lidar2odom.py
+   script/icp_example.py
+   script/turtle_icp.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

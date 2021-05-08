@@ -164,7 +164,7 @@ class Lidar_seguidor:
             vel_msg.angular.z= 0
             self.vel_pub.publish(vel_msg)
         
-            rospy.loginfo("waiting mestre move")
+            rospy.loginfo("waiting mestre mov")
 
 
 

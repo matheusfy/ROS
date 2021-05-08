@@ -10,3 +10,12 @@
  |
  |-> turtle_pose.py (arquivo que faz o robo ir ao ponto definido pelo usuário)
  |-> lidar.py (Arquivo que irá conter as funções para fazer o mestre chegar ate o ponto definido pelo usuario enquanto desvia dos objetos)
+
+
+Desafio 2:
+
+- roslaunch turtlebot3_gazebo turtlebot_empty_world
+
+- rosrun turtlebot_teleop turtlebot_teleopkey
+
+- rosrun carro_autonomo turtle_icp.py
