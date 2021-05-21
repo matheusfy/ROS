@@ -21,12 +21,13 @@ class LidarICP:
         rospy.Subscriber('/scan', LaserScan, self.update)
         rospy.Subscriber('/odom', Odometry, self.update_pose)
 
-        sefl.pose = Pose()
+        self.pose = Pose()
         self.vel = Twist()
         self.scan = LaserScan()
         self.rate = rospy.Rate(10)
         self.max_vel = 0.22
         self.max_ang = 2.84
+        self.previous_points = None
 
     def update(self, msg):
         self.scan = msg
@@ -43,15 +44,16 @@ class LidarICP:
         # angulo em relacao ao meu referencial inicial 
         self.pose.theta =  yaw  
 
-'''
+    '''
     th_matrix = matriz de rotação do sistema de referência B em A pela 
                 posição de Bp
-'''
-    def tf(theta, S, Q, angle = 'rad'):
-        if angle == 'deg':
-            theta = np.deg2rad(theta)
-        th_matrix = np.array([[np.cos(theta),   -np.sin(theta), 0.,      Q[0]],
-                            [np.sin(theta),   np.cos(theta),  0.,      Q[1]],
+    '''
+
+    def tf(angulo, S, Q, *args, **kargs):
+        if angulo == 'deg':
+            angulo = np.deg2rad(angulo)
+        th_matrix = np.array([[np.cos(angulo),   -np.sin(angulo), 0.,      Q[0]],
+                            [np.sin(angulo),   np.cos(angulo),  0.,      Q[1]],
                             [0.,        0.,                   1.,      Q[2]],
                             [0.,        0.,                   0.,      S]])
         return th_matrix
@@ -64,44 +66,72 @@ class LidarICP:
             if r!= 3.5:
                 x1.append( r*np.cos(deg[0]* np.pi/180))
                 y1.append( r*np.sin(deg[0]* np.pi/180))
+        x1 = np.asarray(x1)
+        y1 = np.asarray(y1)
         return x1,y1
 
     def theta_objetivo(self, ref_x, ref_y):
-        angle_correcao = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) + 30 # deslocado em 30° 
+        angle_correcao = np.arctan2(ref_y - self.pose.y,  ref_x - self.pose.x ) + 30 # deslocado em 30° 
         return angle_correcao
         
 
-    def lidar(self, ref_x, ref_y):
+    def main(self, ref_x, ref_y):
+        time.sleep(2)
         Q = np.array([ref_x, ref_y, 0.0])
         S = 1.0
+        # Diferenca entre angulo do objetivo e a orientação robo
+        angulo = self.theta_objetivo(ref_x=ref_x, ref_y=ref_y)
+        # Posição do robo em relação aos eixos cartesiano
+        x, y = self.pt_cartesiano()
+
+        len_points = len(x)
+        #print(x)
+        m_points = np.array([ [x[0]], [y[0]], [0], [1]])
         
-        theta = self.theta_objetivo(ref_x=ref_x, ref_y=ref_y)
-        saida = self.tf(theta= theta, S, Q, angle='deg') @ m_points
+        for i in range(1, len_points):
+            m_points = np.hstack((m_points, np.array([ [ x[i]], [y[i]], [0], [1]] )))
+        deg = 'deg'
+        saida = self.tf(angulo, S, Q, angle = deg ) @ m_points
 
-
+        plt.figure()
+        plt.plot(x,y, 'b *')
+        plt.plot(saida[0,:], saida[1,:], 'g *')
+        plt.show()
+        coord_x = 0
+        coord_y = 0
+        theta = 0
+        input("pause: ")
         while True:
-            coord_x = 0
-            coord_y = 0
-            theta = 0
+
             x, y = self.pt_cartesiano()
-            previous_points = np.vstack((x, y))
+            # Baseando no codigo do professor
+            if self.previous_points == None:
+                self.previous_points = np.vstack((x, y))
+                # ??
+                # T = np.array([0,0]) ???
+                # R = np.eye(2) ????
+            else:
+                current_points = np.vstack((x,y))
+                nVector = min(self.previous_points.shape[1], current_points.shape[1])
+                R ,T = icp_example.icp_matching(self.previous_points[:,:nVector], current_points[:,:nVector])
             
-            if self.vel.linear.x > 0:
+            #     # Tentativa 1
+            # if self.vel.linear.x > 0:
 
-                x_atual, y_atual = self.pt_cartesiano()
-                current_points = np.vstack((x_atual, y_atual))
+            #     x_atual, y_atual = self.pt_cartesiano()
+            #     current_points = np.vstack((x_atual, y_atual))
 
 
-                R,T = icp_example.matching(previous_points, current_points)
+            #     R,T = icp_example.matching(self.previous_points, current_points)
                 
-                coord_x = coord_x + self.vel.linear.x*T*np.cos(self.pose.theta)
-                coord_y = coord_y + self.vel.angular.z*T*np.sin(self.pose.theta)
-                theta = theta + self.vel.angular.z*T
-                # plt.figure()
-                # plt.plot(x, y, '.')
-                # plt.show()
-                print("vel linear atual: " + str(self.vel.linear.x) )
-                time.sleep(2)
+            #     coord_x = coord_x + self.vel.linear.x*T*np.cos(self.pose.theta)
+            #     coord_y = coord_y + self.vel.angular.z*T*np.sin(self.pose.theta)
+            #     theta = theta + self.vel.angular.z*T
+            #     # plt.figure()
+            #     # plt.plot(x, y, '.')
+            #     # plt.show()
+            #     print("vel linear atual: " + str(self.vel.linear.x) )
+            #     time.sleep(2)
             if rospy.is_shutdown():
                 break
             # for x1, y1 in zip(x,y):
@@ -119,7 +149,7 @@ if __name__ == '__main__':
     try:
         mestre = LidarICP()
 
-        mestre.lidar(ref_x =2, ref_y=2)
+        mestre.main(ref_x =2, ref_y=2)
 
     except rospy.ROSInterruptException:
         pass 
