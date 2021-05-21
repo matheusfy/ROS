@@ -29,6 +29,9 @@ class LidarICP:
         self.max_ang = 2.84
         self.previous_points = None
 
+        # variavel professor np.eye cria uma matriz diagonal de dimensao x
+        self.H_ = np.eye(4)
+
     def update(self, msg):
         self.scan = msg
 
@@ -71,7 +74,7 @@ class LidarICP:
         return x1,y1
 
     def theta_objetivo(self, ref_x, ref_y):
-        angle_correcao = np.arctan2(ref_y - self.pose.y,  ref_x - self.pose.x ) + 30 # deslocado em 30° 
+        angle_correcao = np.arctan2(ref_y - self.pose.y,  ref_x - self.pose.x )
         return angle_correcao
         
 
@@ -105,16 +108,25 @@ class LidarICP:
 
             x, y = self.pt_cartesiano()
             # Baseando no codigo do professor
+            
             if self.previous_points == None:
                 self.previous_points = np.vstack((x, y))
-                # ??
-                # T = np.array([0,0]) ???
-                # R = np.eye(2) ????
+                
+                T = np.array([0,0]) 
+                R = np.eye(2) 
             else:
                 current_points = np.vstack((x,y))
                 nVector = min(self.previous_points.shape[1], current_points.shape[1])
                 R ,T = icp_example.icp_matching(self.previous_points[:,:nVector], current_points[:,:nVector])
+                self.previous_points = current_points
             
+            H = np.eye(4)
+            H[0:2,0:2]= R
+            H[0:2,3] = T
+
+            self.H_ = self.H @ H
+
+
             #     # Tentativa 1
             # if self.vel.linear.x > 0:
 
