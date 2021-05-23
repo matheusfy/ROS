@@ -61,8 +61,8 @@ class LidarMestre:
     # Diagonal esquerda inferior 90° ~ 180(2º Quadrante)
     # Esquerda robo de 0 ~ 90° (1º Quadrante)
 
-    def corrige_orientacao(self, ref_pose, ka=1):
-        angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) + 30 # deslocado em 30° 
+    def corrige_orientacao(self, ref_pose, ka=0.5):
+        angle_r = np.arctan2(ref_pose.y - self.pose.y,  ref_pose.x - self.pose.x ) + 15 # deslocado em 30° 
         control_angular = ka*(angle_r - self.pose.theta)         
         if abs(control_angular) > self.max_ang:
             control_angular = self.max_ang*np.sign(control_angular) + 2*PI*0.15 # teoricamente rotaciona para o angulo da direcao do ponto + 45°
@@ -71,7 +71,7 @@ class LidarMestre:
     def ref_distance(self, ref_pose):
         return np.sqrt(  (ref_pose.x - self.pose.x)**2 + (ref_pose.y - self.pose.y)**2)
 
-    def linear_angular_vel_control(self, ref_pose, kp = 1, ka = 3):
+    def linear_angular_vel_control(self, ref_pose, kp = 1, ka = 1.5):
         
         distance = self.ref_distance(ref_pose) # velocidade linear
         control = kp* distance

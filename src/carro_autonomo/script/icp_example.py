@@ -32,17 +32,17 @@ def icp_matching(previous_points, current_points):
     preError = np.inf
     count = 0
 
-    if show_animation:
-        fig = plt.figure()
-        if previous_points.shape[0] == 3:
-           fig.add_subplot(111, projection='3d')
+    # if show_animation:
+    #     fig = plt.figure()
+    #     if previous_points.shape[0] == 3:
+    #        fig.add_subplot(111, projection='3d')
 
     while dError >= EPS:
         count += 1
 
-        if show_animation:  # pragma: no cover
-            plot_points(previous_points, current_points, fig)
-            plt.pause(0.1)
+        # if show_animation:  # pragma: no cover
+        #     plot_points(previous_points, current_points, fig)
+        #     plt.pause(0.1)
 
         indexes, error = nearest_neighbor_association(previous_points, current_points)
         Rt, Tt = svd_motion_estimation(previous_points[:, indexes], current_points)
