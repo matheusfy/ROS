@@ -12,10 +12,11 @@
  |-> lidar.py (Arquivo que irá conter as funções para fazer o mestre chegar ate o ponto definido pelo usuario enquanto desvia dos objetos)
 
 
-Desafio 2:
 
-- roslaunch turtlebot3_gazebo turtlebot_empty_world
 
-- rosrun turtlebot_teleop turtlebot_teleopkey
-
-- rosrun carro_autonomo turtle_icp.py
+## Atividade  odom e icp:
+Desafio 2 comandos para funcionar atividade:
+- roscore
+- roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch (Deve ser inserido alguns objetos no mundo)
+- rosrun turtlebot3_teleop turtlebot3_teleop_key (comando awsd para o carrinho andar e girar)
+- rosrun carro_autonomo turtle_icp.py (Funciona depois que o carro já está em andamento)
