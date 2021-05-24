@@ -23,8 +23,8 @@ class LidarICP:
         self.rate = rospy.Rate(2)
 
         self.previous_points = None
-        fig = plt.figure(figsize= (12,6))
-        self.plt = fig.add_subplot(122, frameon=False)
+        fig = plt.figure()
+        self.plt = fig.add_subplot(121, frameon=False)
         plt.show(block=False)
 
         # variavel professor np.eye cria uma matriz diagonal de dimensao x
